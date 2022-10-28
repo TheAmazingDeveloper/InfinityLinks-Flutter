@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:infinitylinks/constants/constants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeDesktop extends StatefulWidget {
   const HomeDesktop({super.key});
@@ -25,10 +26,10 @@ class _HomeDesktopState extends State<HomeDesktop> {
         height: constants.height,
         width: constants.width,
         decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/images/background.webp'),
-              fit: BoxFit.fill),
-        ),
+            //image: DecorationImage(
+            //    image: AssetImage('assets/images/background.webp'),
+            //    fit: BoxFit.fill),
+            ),
         child: Column(
           children: [
             displayPic(constants),
@@ -89,7 +90,8 @@ Widget displayPic(Constants constants) {
 }
 
 Widget displayName(Constants constants) {
-  ValueNotifier ishovering = ValueNotifier(false);
+  ValueNotifier ishoveringinsta = ValueNotifier(false);
+  ValueNotifier ishoveringgit = ValueNotifier(false);
   return Container(
     decoration: BoxDecoration(
         color: Colors.black, borderRadius: BorderRadius.circular(25)),
@@ -103,14 +105,17 @@ Widget displayName(Constants constants) {
         MouseRegion(
             cursor: SystemMouseCursors.click,
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                launchUrl(Uri.parse(Constants.instagramLink),
+                    webOnlyWindowName: "_blank");
+              },
               onHover: (value) {
-                ishovering.value = !ishovering.value;
+                ishoveringinsta.value = !ishoveringinsta.value;
               },
               child: ValueListenableBuilder(
-                valueListenable: ishovering,
+                valueListenable: ishoveringinsta,
                 builder: (context, value, child) {
-                  return ishovering.value == false
+                  return ishoveringinsta.value == false
                       ? FaIcon(
                           FontAwesomeIcons.instagram,
                           color: Colors.white,
@@ -118,7 +123,11 @@ Widget displayName(Constants constants) {
                         )
                       : AnimatedContainer(
                           duration: Duration(seconds: 2),
-                          child: Image.asset('assets/images/instaIcon.png'));
+                          child: Image.asset(
+                            'assets/images/instaIcon.png',
+                            height: 36,
+                            width: 36,
+                          ));
                 },
               ),
             )),
@@ -134,13 +143,37 @@ Widget displayName(Constants constants) {
           width: constants.width / 40,
         ),
         MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: FaIcon(
-            FontAwesomeIcons.github,
-            color: Colors.white,
-            size: 36,
-          ),
-        )
+            cursor: SystemMouseCursors.click,
+            child: InkWell(
+              onTap: () {
+                launchUrl(Uri.parse(Constants.githubLink),
+                    webOnlyWindowName: "_blank");
+              },
+              onHover: (value) {
+                ishoveringgit.value = !ishoveringgit.value;
+              },
+              child: ValueListenableBuilder(
+                valueListenable: ishoveringgit,
+                builder: (context, value, child) {
+                  return ishoveringgit.value == false
+                      ? FaIcon(
+                          FontAwesomeIcons.github,
+                          color: Colors.white,
+                          size: 36,
+                        )
+                      : AnimatedContainer(
+                          duration: Duration(seconds: 2),
+                          child: Transform.scale(
+                            scale: 1.6,
+                            child: Image.asset(
+                              'assets/images/githubIcon.png',
+                              height: 36,
+                              width: 36,
+                            ),
+                          ));
+                },
+              ),
+            ))
       ],
     ),
   );
