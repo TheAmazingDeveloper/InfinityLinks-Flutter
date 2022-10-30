@@ -1,5 +1,7 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:infinitylinks/constants/constants.dart';
@@ -33,7 +35,8 @@ class _HomeMobileState extends State<HomeMobile> {
             SizedBox(
               height: constants.height / 35,
             ),
-            displayName(constants)
+            displayName(constants),
+            buildCarouselCard(constants, context)
           ],
         ),
       ),
@@ -133,4 +136,246 @@ Widget displayName(Constants constants) {
       ],
     ),
   );
+}
+
+Widget buildCarouselCard(Constants constants, BuildContext context) {
+  List languages = ["Flutter"];
+  List month = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
+  return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Container(
+          height: constants.height / 2.03,
+          width: constants.width / 1,
+          color: Colors.red,
+          child: ListView.builder(
+              itemCount: languages.length,
+              itemBuilder: (context, i) {
+                return Container(
+                    height: constants.height / 2.04,
+                    width: constants.width / 1,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: Colors.amber),
+                    child: Stack(children: [
+                      Positioned(
+                        top: 0,
+                        left: 5,
+                        child: Container(
+                          width: constants.width / 4,
+                          decoration: BoxDecoration(
+                              color: Colors.black,
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(25)),
+                          padding: EdgeInsets.only(left: 8),
+                          child: Text(
+                            languages[i],
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: 1.2),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        height: constants.height / 2.34,
+                        width: constants.width / 1,
+                        top: 40,
+                        child: ScrollConfiguration(
+                            behavior: ScrollConfiguration.of(context).copyWith(
+                                dragDevices: {
+                                  PointerDeviceKind.mouse,
+                                  PointerDeviceKind.touch,
+                                  PointerDeviceKind.trackpad
+                                }),
+                            child: StreamBuilder(
+                                stream: FirebaseFirestore.instance
+                                    .collection(
+                                        languages[i].toString().toLowerCase())
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  var docs = snapshot.data?.docs;
+                                  if (snapshot.data != null) {
+                                    return ListView.builder(
+                                      itemCount: docs?.length,
+                                      scrollDirection: Axis.horizontal,
+                                      shrinkWrap: true,
+                                      physics: BouncingScrollPhysics(),
+                                      itemBuilder: (context, index) {
+                                        var data = docs![index].data();
+                                        Timestamp timestamp =
+                                            data['publishedOn'];
+                                        var dateTime =
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                timestamp
+                                                    .toDate()
+                                                    .millisecondsSinceEpoch);
+                                        String publishedOn =
+                                            "${dateTime.day} ${month[dateTime.month.toInt() - 1]} ${dateTime.year}";
+                                        return Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 5, right: 5),
+                                          child: Container(
+                                            width: constants.width / 1.5,
+                                            decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                shape: BoxShape.rectangle,
+                                                borderRadius:
+                                                    BorderRadius.circular(25)),
+                                            padding: EdgeInsets.all(8),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  shape: BoxShape.rectangle,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          25)),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(5, 5, 5, 0),
+                                                    child: Container(
+                                                      height:
+                                                          constants.height / 6,
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                            image: NetworkImage(
+                                                                data[
+                                                                    'imageUrl']),
+                                                            fit: BoxFit.fill),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            5, 4, 5, 0),
+                                                    child: Text(
+                                                      data['title'],
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            5, 4, 5, 0),
+                                                    child: Text(
+                                                      data['shortDesc'],
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          letterSpacing: 0),
+                                                      maxLines: 3,
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            5, 5, 5, 0),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Container(
+                                                          decoration: BoxDecoration(
+                                                              border: Border.all(
+                                                                  color: Colors
+                                                                      .teal
+                                                                      .shade800,
+                                                                  width: 2),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          25)),
+                                                          child: TextButton(
+                                                            onPressed: () {},
+                                                            onHover: (hover) {},
+                                                            child: Text(
+                                                              "Learn More",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          decoration: BoxDecoration(
+                                                              color: Colors.teal
+                                                                  .shade800,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          25)),
+                                                          child: TextButton(
+                                                            onPressed: () {
+                                                              launchUrl(
+                                                                  Uri.parse(data[
+                                                                      'projectUrl']),
+                                                                  webOnlyWindowName:
+                                                                      "_blank");
+                                                            },
+                                                            onHover: (hover) {},
+                                                            child: Text(
+                                                              "Visit",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 10, top: 3),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        Text(
+                                                          publishedOn,
+                                                          style: TextStyle(
+                                                              color: Colors.grey
+                                                                  .shade600),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    return Text("data");
+                                  }
+                                })),
+                      )
+                    ]));
+              })));
 }
