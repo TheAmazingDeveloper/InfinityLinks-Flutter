@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -214,6 +216,7 @@ Widget buildCarouselCard(Constants constants, BuildContext context) {
             width: constants.width / 1,
             child: ListView.builder(
                 itemCount: languages.length,
+                scrollDirection: Axis.vertical,
                 itemBuilder: (context, i) {
                   return _buildLanguages(
                       constants, languages, i, context, month);
@@ -268,135 +271,194 @@ Container _buildLanguages(Constants constants, List<dynamic> languages, int i,
                   builder: (context, snapshot) {
                     var docs = snapshot.data?.docs;
                     if (snapshot.data != null) {
-                      return ListView.builder(
-                        itemCount: docs?.length,
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        physics: BouncingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          var data = docs![index].data();
-                          Timestamp timestamp = data['publishedOn'];
-                          var dateTime = DateTime.fromMillisecondsSinceEpoch(
-                              timestamp.toDate().millisecondsSinceEpoch);
-                          String publishedOn =
-                              "${dateTime.day} ${month[dateTime.month.toInt() - 1]} ${dateTime.year}";
-                          return Padding(
-                            padding: EdgeInsets.only(left: 5, right: 5),
-                            child: Container(
-                              width: constants.width / 5,
-                              decoration: BoxDecoration(
-                                  color: Colors.black,
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(25)),
-                              padding: EdgeInsets.all(8),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(25)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(5, 5, 5, 0),
-                                      child: Container(
-                                        height: constants.height / 6,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: NetworkImage(
-                                                  data['imageUrl']),
-                                              fit: BoxFit.fill),
+                      getQR() {
+                        List colors = [
+                          "blue",
+                          "green",
+                          "purple",
+                          "rainbow",
+                        ];
+                        int randomNum = Random().nextInt(4);
+                        String randomQR =
+                            "assets/images/instaqr/instaQR_${colors[randomNum].toString()}.webp";
+                        return randomQR;
+                      }
+
+                      return Row(
+                        children: [
+                          Visibility(
+                            visible: languages[i] == "Instagram",
+                            maintainInteractivity: false,
+                            maintainSize: false,
+                            maintainState: false,
+                            child: Padding(
+                                padding: EdgeInsets.only(left: 5, right: 5),
+                                child: Container(
+                                    width: constants.width / 5,
+                                    decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius:
+                                            BorderRadius.circular(25)),
+                                    padding: EdgeInsets.all(8),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.rectangle,
                                           borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.fromLTRB(5, 4, 5, 0),
-                                      child: Text(
-                                        data['title'],
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.fromLTRB(5, 4, 5, 0),
-                                      child: Text(
-                                        data['shortDesc'],
-                                        style: TextStyle(
-                                            fontSize: 12, letterSpacing: 0),
-                                        maxLines: 3,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                              BorderRadius.circular(25)),
+                                      child: Image.asset(getQR()),
+                                    ))),
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: docs?.length,
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              physics: BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                var data = docs![index].data();
+                                Timestamp timestamp = data['publishedOn'];
+                                var dateTime =
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                        timestamp
+                                            .toDate()
+                                            .millisecondsSinceEpoch);
+                                String publishedOn =
+                                    "${dateTime.day} ${month[dateTime.month.toInt() - 1]} ${dateTime.year}";
+                                return Padding(
+                                  padding: EdgeInsets.only(left: 5, right: 5),
+                                  child: Container(
+                                    width: constants.width / 5,
+                                    decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius:
+                                            BorderRadius.circular(25)),
+                                    padding: EdgeInsets.all(8),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(25)),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.teal.shade800,
-                                                    width: 2),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                5, 5, 5, 0),
+                                            child: Container(
+                                              height: constants.height / 6,
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        data['imageUrl']),
+                                                    fit: BoxFit.fill),
                                                 borderRadius:
-                                                    BorderRadius.circular(25)),
-                                            child: TextButton(
-                                              onPressed: () {},
-                                              onHover: (hover) {},
-                                              child: Text(
-                                                "Learn More",
-                                                style: TextStyle(
-                                                    color: Colors.black),
+                                                    BorderRadius.circular(20),
                                               ),
                                             ),
                                           ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.teal.shade800,
-                                                borderRadius:
-                                                    BorderRadius.circular(25)),
-                                            child: TextButton(
-                                              onPressed: () {
-                                                launchUrl(
-                                                    Uri.parse(
-                                                        data['projectUrl']),
-                                                    webOnlyWindowName:
-                                                        "_blank");
-                                              },
-                                              onHover: (hover) {},
-                                              child: Text(
-                                                "Visit",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.fromLTRB(5, 4, 5, 0),
+                                            child: Text(
+                                              data['title'],
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.fromLTRB(5, 4, 5, 0),
+                                            child: Text(
+                                              data['shortDesc'],
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  letterSpacing: 0),
+                                              maxLines: 3,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.fromLTRB(5, 5, 5, 0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Colors
+                                                              .teal.shade800,
+                                                          width: 2),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              25)),
+                                                  child: TextButton(
+                                                    onPressed: () {},
+                                                    onHover: (hover) {},
+                                                    child: Text(
+                                                      "Learn More",
+                                                      style: TextStyle(
+                                                          color: Colors.black),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                      color:
+                                                          Colors.teal.shade800,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              25)),
+                                                  child: TextButton(
+                                                    onPressed: () {
+                                                      launchUrl(
+                                                          Uri.parse(data[
+                                                              'projectUrl']),
+                                                          webOnlyWindowName:
+                                                              "_blank");
+                                                    },
+                                                    onHover: (hover) {},
+                                                    child: Text(
+                                                      "Visit",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 10, top: 5),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Text(
+                                                  publishedOn,
+                                                  style: TextStyle(
+                                                      color:
+                                                          Colors.grey.shade600),
+                                                )
+                                              ],
                                             ),
                                           )
                                         ],
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 10, top: 5),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            publishedOn,
-                                            style: TextStyle(
-                                                color: Colors.grey.shade600),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
+                          ),
+                        ],
                       );
                     } else {
                       return Shimmer.fromColors(
