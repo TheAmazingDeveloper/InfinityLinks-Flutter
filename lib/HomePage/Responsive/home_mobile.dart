@@ -25,10 +25,10 @@ class _HomeMobileState extends State<HomeMobile> {
         height: constants.height,
         width: constants.width,
         decoration: BoxDecoration(
-            // image: DecorationImage(
-            //     image: AssetImage('assets/images/background.webp'),
-            //     fit: BoxFit.cover),
-            ),
+          image: DecorationImage(
+              image: AssetImage('assets/images/background.webp'),
+              fit: BoxFit.cover),
+        ),
         child: Column(
           children: [
             displayPic(constants),
@@ -157,18 +157,17 @@ Widget buildCarouselCard(Constants constants, BuildContext context) {
   return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Container(
-          height: constants.height / 2.03,
+          height: constants.height / 1.98,
           width: constants.width / 1,
-          color: Colors.red,
           child: ListView.builder(
               itemCount: languages.length,
               itemBuilder: (context, i) {
                 return Container(
-                    height: constants.height / 2.04,
+                    height: constants.height / 1.99,
                     width: constants.width / 1,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        color: Colors.amber),
+                      borderRadius: BorderRadius.circular(25),
+                    ),
                     child: Stack(children: [
                       Positioned(
                         top: 0,
@@ -191,7 +190,7 @@ Widget buildCarouselCard(Constants constants, BuildContext context) {
                         ),
                       ),
                       Positioned(
-                        height: constants.height / 2.34,
+                        height: constants.height / 2.28,
                         width: constants.width / 1,
                         top: 40,
                         child: ScrollConfiguration(
@@ -235,7 +234,7 @@ Widget buildCarouselCard(Constants constants, BuildContext context) {
                                                 shape: BoxShape.rectangle,
                                                 borderRadius:
                                                     BorderRadius.circular(25)),
-                                            padding: EdgeInsets.all(8),
+                                            padding: EdgeInsets.all(4),
                                             child: Container(
                                               decoration: BoxDecoration(
                                                   color: Colors.white,
@@ -273,7 +272,8 @@ Widget buildCarouselCard(Constants constants, BuildContext context) {
                                                       data['title'],
                                                       style: TextStyle(
                                                           fontWeight:
-                                                              FontWeight.w600),
+                                                              FontWeight.w500,
+                                                          fontSize: 20),
                                                     ),
                                                   ),
                                                   Padding(
@@ -283,7 +283,7 @@ Widget buildCarouselCard(Constants constants, BuildContext context) {
                                                     child: Text(
                                                       data['shortDesc'],
                                                       style: TextStyle(
-                                                          fontSize: 12,
+                                                          fontSize: 14,
                                                           letterSpacing: 0),
                                                       maxLines: 3,
                                                     ),
@@ -307,7 +307,7 @@ Widget buildCarouselCard(Constants constants, BuildContext context) {
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
-                                                                          25)),
+                                                                          50)),
                                                           child: TextButton(
                                                             onPressed: () {},
                                                             onHover: (hover) {},
